@@ -34,6 +34,56 @@ $var title: $header_title
           </div>
       </div>
 
+      $if web.input().get('cta'):
+      <div id="cta-banner" class="cta-banner">
+        <p>
+          $cta_message = {
+              "checkout/book123": "You're all set! Click here to continue borrowing your book.",
+              "invite/redeem": "Welcome! Your special invite has been applied.",
+              "special-offer": "Exclusive offer unlocked! Check it out."
+          }.get(web.input().get('cta'), "Welcome back! Continue where you left off.")
+  
+          ${cta_message}
+        </p>
+        <button onclick="dismissBanner()">Dismiss</button>
+      </div>
+  
+      <script>
+          function dismissBanner() {
+              document.getElementById('cta-banner').style.display = 'none';
+              if (window.history.replaceState) {
+                  let url = new URL(window.location);
+                  url.searchParams.delete('cta'); // Remove CTA param from URL
+                  window.history.replaceState({}, document.title, url);
+              }
+          }
+      </script>
+  
+      <style>
+          .cta-banner {
+              background-color: #fffae5;
+              color: #333;
+              padding: 15px;
+              text-align: center;
+              border: 1px solid #f4c542;
+              border-radius: 5px;
+              margin: 10px 0;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+          }
+          .cta-banner button {
+              background: #f4c542;
+              border: none;
+              padding: 5px 10px;
+              cursor: pointer;
+              margin-left: 10px;
+          }
+          .cta-banner button:hover {
+              background: #e0b73e;
+          }
+      </style>
+
       $if not mb.is_my_page and mb.is_subscribed != -1:
         $:macros.Follow(mb.username, following=mb.is_subscribed)
 
